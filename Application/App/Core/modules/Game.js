@@ -266,7 +266,6 @@ export default class Game {
     function enableRotate(event) {
       if (controls.enableRotate == true || event.key != "Shift") return;
       controls.enableRotate = true;
-      console.log(controls.enableRotate);
     }
     function disableRotate(event) {
       if (event.key != "Shift") return;

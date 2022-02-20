@@ -168,7 +168,7 @@ export default class Game {
     this.scene.add(this.clickMarker);
 
     //Create touch plane
-    const planeGeometry = new THREE.PlaneBufferGeometry(this.worldSize.side * 2, this.worldSize.side * 2);
+    const planeGeometry = new THREE.PlaneBufferGeometry(this.worldSize.side * 4, this.worldSize.side * 2);
     this.movementPlane = new THREE.Mesh(planeGeometry);
     this.movementPlane.visible = false;
     this.scene.add(this.movementPlane);

@@ -1,0 +1,35 @@
+.score {
+  position: absolute;
+  right: 10px;
+  top: 80px;
+
+  width: min-content;
+
+  background-color: white;
+
+  padding: 10px;
+
+  border-radius: 7px;
+  border: 5px solid rgb(33, 84, 151);
+
+  text-align: center;
+  font-weight: bold;
+  white-space: nowrap;
+  font-size: 24px;
+  letter-spacing: 1px;
+
+  user-select: none;
+}
+.score.open {
+  transition: opacity 1s ease-in;
+  opacity: 1;
+  z-index: 100;
+}
+.score.close {
+  opacity: 0;
+  z-index: -1;
+}
+.score.hide {
+  transition: opacity 1s ease-in;
+  opacity: 0;
+}

@@ -1,0 +1,34 @@
+.timer {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+
+  width: 100px;
+
+  background-color: white;
+
+  padding: 10px;
+
+  border-radius: 7px;
+  border: 5px solid rgb(33, 84, 151);
+
+  text-align: center;
+  font-weight: bold;
+  font-size: 24px;
+  letter-spacing: 1px;
+
+  user-select: none;
+}
+.timer.open {
+  transition: opacity 1s ease-in;
+  opacity: 1;
+  z-index: 100;
+}
+.timer.close {
+  opacity: 0;
+  z-index: -1;
+}
+.timer.hide {
+  transition: opacity 1s ease-in;
+  opacity: 0;
+}

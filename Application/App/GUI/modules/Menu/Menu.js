@@ -28,7 +28,6 @@ export default class Menu extends GUIElement {
       let playerName = document.getElementById("nameInput").value;
       playerName === "" ? (playerName = "Игрок") : playerName;
       this.playerName = playerName;
-      console.log(this.playerName);
       // localStorage.setItem("GamePlayerName", playerName);
       this.result = true;
       this.close();

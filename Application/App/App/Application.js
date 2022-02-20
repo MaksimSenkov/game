@@ -29,8 +29,8 @@ export default class Application {
     this.GUI.appendToHUD(
       "lifes",
       new GraphicalUserInterface.Lifes({
-        yesLifePath: "/Application/App/media/YesLife.png",
-        noLifePath: "/Application/App/media/NoLife.png",
+        yesLifePath: "./Application/App/media/YesLife.png",
+        noLifePath: "./Application/App/media/NoLife.png",
         numberOfLifes: this.lifes,
         lifesLeft: this.playerLifes,
       })

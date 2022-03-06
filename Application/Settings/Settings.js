@@ -1,3 +1,3 @@
 export const Settings = {
-  playerLifes: 5,
+  playerLifes: 3,
 };

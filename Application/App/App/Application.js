@@ -1,5 +1,8 @@
 import * as Engine from "../Core/Core.js";
+import { TetrahedronGeometry } from "../Core/libraries/three.module.js";
 import * as GraphicalUserInterface from "../GUI/GUI.js";
+
+import * as THREE from "../Core/libraries/three.module.js";
 
 export default class Application {
   constructor(root, levels, settings) {
@@ -38,12 +41,20 @@ export default class Application {
     this.GUI.appendToHUD("timer", new GraphicalUserInterface.VTimer());
     this.GUI.appendToHUD("score", new GraphicalUserInterface.Score());
     this.GUI.appendToHUD("checkButton", new GraphicalUserInterface.CheckButton());
+    this.GUI.appendToHUD("colorChanger", new GraphicalUserInterface.ColorChanger(this.root));
+
+    this.root.addEventListener("colorChange", this.colorChange.bind(this));
 
     this.GUI.initHUD(this.root);
 
     // this.GUI.mainMenuOpen();
 
     this.Game.run();
+  }
+  colorChange(event) {
+    for (let mesh of this.Game.giveLastMeshesGroup()) {
+      mesh.material.color = new THREE.Color(`${event.detail.color}`);
+    }
   }
   decrementLifes() {
     this.playerLifes--;
@@ -57,6 +68,7 @@ export default class Application {
     const Game = this.Game;
     const GUI = this.GUI;
 
+    const totalLife = this.playerLifes;
     let lifes = this.playerLifes;
     let score = this.playerScore;
 
@@ -76,7 +88,6 @@ export default class Application {
 
       this.playerName = GUI.mainMenu.givePlayerName;
       this.setPlayerNameToLocalStorage();
-
       this.setPlayerScoreToLocalStorage();
 
       await Game.moveCameraFromTo(Game.camera.position, { x: 100, y: 100, z: 0 });
@@ -85,15 +96,31 @@ export default class Application {
         this.GUI.mainMenuClose();
       }, 0);
 
+      Log.startLogging();
+
+      let attempts = 0;
       for (let i = 0; i < this.levels.length; ) {
         if (this.playerLifes === 0) break;
 
+        attempts++;
+        if (attempts === 1) Log.createLogEntry(i + 1);
+
         const result = await running(this.levels[i], i);
 
-        if (result) i++;
+        if (result.result) {
+          Log.updateLogEntry(i + 1, {
+            attempts: attempts,
+            time: result.stopTime,
+            score: this.levels[i].score,
+          });
+          attempts = 0;
+          i++;
+        }
       }
 
       await Game.moveCameraFromTo(Game.camera.position, { x: 0, y: 20, z: 0 });
+
+      Log.addLog();
       this.GUI.initResultMenu(this.root, new GraphicalUserInterface.Result());
 
       setTimeout(() => {
@@ -104,13 +131,13 @@ export default class Application {
 
       setTimeout(() => {
         this.GUI.resultMenuClose();
+        this.GUI.resultMenuKill();
       }, 0);
 
-      this.playerLifes = 4;
+      this.playerLifes = totalLife;
       lifes = this.playerLifes;
       this.playerScore = 0;
       score = this.playerScore;
-      console.warn("Game Over!!!!!!!!!");
     }
 
     async function running(levelSettings, levelNumber) {
@@ -151,16 +178,22 @@ export default class Application {
       timer.kill();
 
       if (result) {
-        levelResult = true;
+        levelResult = {
+          result: true,
+          stopTime: GUI.HUD["timer"].getTime(),
+        };
 
-        incrementGlobalScore(1000);
-        incrementScore(1000);
+        incrementGlobalScore(levelSettings.score);
+        incrementScore(levelSettings.score);
         setPlayerScoreToLocalStorage();
 
         GUI.initModal(root, new GraphicalUserInterface.Modal({ message: `Уровень пройден!` }));
         GUI.modal.addButton("Дальше");
       } else {
-        levelResult = false;
+        levelResult = {
+          result: false,
+          stopTime: GUI.HUD["timer"].getTime(),
+        };
 
         decrementGlobalLifes();
         decrementLifes();
@@ -252,5 +285,122 @@ class Timer {
   }
   kill() {
     clearTimeout(this.timer);
+  }
+}
+
+// let json = {
+//   Maksim: [
+//     {
+//       "Jun 1, 23:44": {
+//         1: {
+//           attempts: "4",
+//           time: "0:38",
+//           score: "1000",
+//         },
+//         2: {
+//           attempts: "2",
+//           time: "0:18",
+//           score: "1500",
+//         },
+//       },
+//     },
+//     {
+//       "Jun 23, 13:44": {
+//         1: {
+//           attempts: "4",
+//           time: "0:38",
+//           score: "1000",
+//         },
+//         2: {
+//           attempts: "2",
+//           time: "0:18",
+//           score: "1500",
+//         },
+//       },
+//     },
+//   ],
+//   Barinova: [
+//     {
+//       "Jun 1, 23:44": {
+//         1: {
+//           attempts: "4",
+//           time: "0:38",
+//           score: "1000",
+//         },
+//         2: {
+//           attempts: "2",
+//           time: "0:18",
+//           score: "1500",
+//         },
+//       },
+//     },
+//     {
+//       "Jun 23, 13:44": {
+//         1: {
+//           attempts: "4",
+//           time: "0:38",
+//           score: "1000",
+//         },
+//         2: {
+//           attempts: "2",
+//           time: "0:18",
+//           score: "1500",
+//         },
+//       },
+//     },
+//   ],
+// };
+
+// localStorage.setItem("gameData", JSON.stringify(json));
+class Log {
+  static #data = JSON.parse(localStorage.getItem("gameData") || JSON.stringify({}));
+
+  static #playerName = undefined;
+  static #date = undefined;
+  static #currentLog = undefined;
+
+  static startLogging() {
+    this.#playerName = localStorage.getItem("GamePlayerName");
+    this.#date = new Date();
+    this.#currentLog = {};
+  }
+
+  static createLogEntry(levelNumber) {
+    this.#currentLog[levelNumber] = {
+      // levelNumber: levelNumber,
+      attempts: "0",
+      time: "00:00",
+      score: "0",
+    };
+  }
+
+  static updateLogEntry(levelNumber, gameData) {
+    this.#currentLog[levelNumber] = {
+      attempts: gameData.attempts,
+      time: gameData.time,
+      score: gameData.score,
+    };
+  }
+
+  static addLog() {
+    const date = this.#date;
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    if (!(this.#playerName in this.#data)) {
+      let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+      this.#data[this.#playerName] = [{ [`${months[date.getMonth()]} ${date.getDate()}, ${date.getHours()}:${minutes}`]: this.#currentLog }];
+    } else {
+      const player = this.#data[this.#playerName];
+
+      if (player.length >= 3) {
+        player.pop();
+      }
+
+      let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+
+      player.unshift({ [`${months[date.getMonth()]} ${date.getDate()}, ${date.getHours()}:${minutes}`]: this.#currentLog });
+    }
+
+    localStorage.setItem("gameData", JSON.stringify(this.#data));
   }
 }

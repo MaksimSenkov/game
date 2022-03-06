@@ -1,0 +1,33 @@
+.colorChanger {
+  position: absolute;
+  right: 10px;
+  bottom: 80px;
+
+  height: 50px;
+  width: 50px;
+  background-color: white;
+
+  padding: 2px;
+
+  border-radius: 7px;
+  border: 5px solid rgb(33, 84, 151);
+
+  transition: background-color 0.3s, color 0.3s;
+}
+.colorChanger.open {
+  transition: opacity 1s ease-in;
+  opacity: 1;
+  z-index: 100;
+}
+.colorChanger.close {
+  opacity: 0;
+  z-index: -1;
+}
+.colorChanger.hide {
+  transition: opacity 1s ease-in;
+  opacity: 0;
+}
+.colorChanger:hover {
+  color: white;
+  background-color: rgb(19, 58, 110);
+}

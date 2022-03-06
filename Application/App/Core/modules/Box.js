@@ -14,6 +14,10 @@ export default class Box {
 
     const physicsGeometry = new CANNON.Box(new CANNON.Vec3(options.width / 2, options.height / 2, options.depth / 2));
     this.physicsBody = new CANNON.Body({ mass: options.mass, shape: physicsGeometry });
+
+    this.mesh.userData = {
+      ID: options.columnID,
+    };
   }
 
   get getMesh() {

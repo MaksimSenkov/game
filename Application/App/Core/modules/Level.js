@@ -103,7 +103,7 @@ export default class Level {
     const positions = distributePositions(numberOfColumns, columns);
     this.positions = positions;
 
-    createColumns(numberOfColumns, columns);
+    createColumns(numberOfColumns, columns, positions);
     createToruses(toruses, columns, numberOfTorusesOnColumn, positions);
 
     distributeColumns(positions, columns);
@@ -123,7 +123,7 @@ export default class Level {
       }
       return positions;
     }
-    function createColumns(numberOfColumns, columns) {
+    function createColumns(numberOfColumns, columns, positions) {
       for (let i = 0; i < numberOfColumns; i++) {
         columns.push(
           new Box({
@@ -132,7 +132,7 @@ export default class Level {
             depth: 2,
             color: new THREE.Color(`rgb(${getRandomIntInclusive(0, 100)}%,${getRandomIntInclusive(0, 100)}%,${getRandomIntInclusive(0, 100)}%)`),
             mass: 10,
-            columnID: `${i}`,
+            columnID: `${positions[i].id}`,
           })
         );
 

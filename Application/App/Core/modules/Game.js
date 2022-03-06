@@ -44,6 +44,8 @@ export default class Game {
     };
 
     this.debug = [];
+
+    this.lastMeshesGroup = [];
   }
 
   run() {
@@ -256,6 +258,10 @@ export default class Game {
 
     let jointBody = this.jointBody;
     let jointConstraint = this.jointConstraint;
+
+    let lastMeshesGroup = this.lastMeshesGroup;
+    const meshesGroup = this.meshesGroup.bind(this);
+
     function onWindowResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -279,6 +285,7 @@ export default class Game {
 
       if (!hitPoint) return;
 
+      takeMeshesGroup(event.clientX, event.clientY, camera, meshes, lastMeshesGroup);
       // Move marker mesh on contact point
       showClickMarker();
       moveClickMarker(hitPoint.hitCoor);
@@ -394,8 +401,32 @@ export default class Game {
     function findBody(meshes, mesh) {
       return meshes.indexOf(mesh);
     }
-  }
 
+    function takeMeshesGroup(clientX, clientY, camera, meshes, lastMeshesGroup) {
+      const mouse = new THREE.Vector2();
+      mouse.x = (clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -((clientY / window.innerHeight) * 2 - 1);
+
+      raycaster.setFromCamera(mouse, camera);
+
+      let hits = undefined;
+      if (meshes.length > 1) {
+        hits = raycaster.intersectObjects(meshes);
+      } else {
+        hits = raycaster.intersectObject(meshes);
+      }
+
+      lastMeshesGroup = meshes.filter((mesh) => {
+        if (mesh.userData.ID == undefined) return false;
+
+        return mesh.userData.ID[0] == hits[0].object.userData.ID[0];
+      });
+      meshesGroup(lastMeshesGroup);
+    }
+  }
+  meshesGroup(lastMeshesGroup) {
+    this.lastMeshesGroup = lastMeshesGroup;
+  }
   takeLevel(level) {
     this.currentLevel = level;
   }
@@ -544,6 +575,10 @@ export default class Game {
     }
   }
 
+  giveLastMeshesGroup() {
+    return this.lastMeshesGroup;
+  }
+
   endLevel() {
     const levelSettings = this.currentLevel.giveSettings();
     const bodies = this.bodies;
@@ -588,24 +623,7 @@ export default class Game {
       }
     }
   }
-  // deployObjects(arrayOfObjects) {
-  //   for (let i = 0; i < arrayOfObjects[0].length; i++) {
-  //     this.add(arrayOfObjects[0][i]);
-  //   }
-  //   let i = 0;
-  //   let time = 180;
-  //   let timerId = setInterval(
-  //     () => {
-  //       this.add(arrayOfObjects[1][i]);
-  //       i++;
-  //     },
-  //     time,
-  //     arrayOfObjects[1]
-  //   );
-  //   setTimeout(() => {
-  //     clearInterval(timerId);
-  //   }, time * arrayOfObjects[1].length);
-  // }
+
   async deployObjects(arrayOfObjects, animationTime) {
     let i = 0;
     // let time = 180;
@@ -635,6 +653,7 @@ export default class Game {
     }
     this.meshes.length = 0;
     this.bodies.length = 0;
+    this.lastMeshesGroup.length = 0;
   }
   clearMeshe(mesh) {
     this.scene.remove(mesh);
@@ -656,3 +675,4 @@ export default class Game {
     this.scene.add(body);
   }
 }
+``;

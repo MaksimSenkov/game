@@ -9,4 +9,5 @@ const App = new Application(root, Levels, Settings);
 App.init();
 App.start();
 App.run();
+
 window.app = App;

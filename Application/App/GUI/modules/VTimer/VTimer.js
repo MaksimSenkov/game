@@ -6,6 +6,9 @@ export default class VisualTimer extends GUIElement {
     this.node = document.createElement("div");
     this.node.classList.add("timer", "close");
   }
+  getTime() {
+    return this.node.innerText;
+  }
   update(time) {
     this.node.innerText = time;
   }

@@ -6,5 +6,6 @@ import Score from "./modules/Score/Score.js";
 import CheckButton from "./modules/CheckButton/CheckButton.js";
 import Result from "./modules/Result/Result.js";
 import GUI from "./modules/GUI/GUI.js";
+import ColorChanger from "./modules/ColorChanger/ColorChanger.js";
 
-export { GUI, Modal, Menu, Lifes, VTimer, Score, CheckButton, Result };
+export { GUI, Modal, Menu, Lifes, VTimer, Score, CheckButton, Result, ColorChanger };

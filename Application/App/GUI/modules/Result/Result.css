@@ -1,5 +1,5 @@
 .result {
-  width: 33.3%;
+  width: 50%;
   padding: 10px;
 
   font-weight: bold;
@@ -7,6 +7,7 @@
 
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
 }
 .result.open {
@@ -22,7 +23,8 @@
   opacity: 0;
   z-index: -1;
 }
-.result__output {
+.result__output.open {
+  display: block;
   padding: 10px;
 
   display: flex;
@@ -33,6 +35,9 @@
 
   border-radius: 7px;
 }
+.result__output {
+  display: none;
+}
 .field {
   display: grid;
   gap: 10px;
@@ -42,7 +47,7 @@
   justify-self: right;
 }
 .result__menuButton {
-  width: 100%;
+  width: 50%;
 
   height: 60px;
 
@@ -61,4 +66,123 @@
 }
 .result__menuButton:hover {
   background-color: rgb(66, 121, 194);
+}
+
+.result__all.open {
+  display: block;
+  background-color: #fff;
+  width: 100%;
+  height: 50vh;
+  padding: 10px;
+  border-radius: 7px;
+  border: 5px solid rgb(33, 84, 151);
+  overflow: auto;
+}
+.result__all {
+  display: none;
+}
+.result__all::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+.result__all::-webkit-scrollbar-track {
+  background: transparent;
+}
+.result__all::-webkit-scrollbar-thumb {
+  background-color: #468de9;
+  border-radius: 20px;
+}
+.result__list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.player {
+  background-color: rgb(103, 159, 231);
+  border-radius: 7px;
+
+  overflow: hidden;
+}
+
+.player__name {
+  color: white;
+  border-radius: 7px;
+  background-color: rgb(70, 141, 233);
+  border: 5px solid rgb(33, 84, 151);
+  padding: 5px;
+
+  user-select: none;
+}
+.player__name:hover {
+  cursor: pointer;
+  background-color: rgb(66, 121, 194);
+}
+
+.games {
+  padding: 0;
+  max-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.games > * {
+  display: none;
+}
+.games.open {
+  max-height: min-content;
+}
+.games.open > * {
+  display: block;
+}
+.games.close {
+  padding: 0;
+  height: 0;
+}
+.game__date {
+  user-select: none;
+  background-color: tomato;
+
+  border-radius: 7px;
+  background-color: rgb(70, 141, 233);
+  border: 2px solid rgb(33, 84, 151);
+  padding: 5px;
+}
+.game__date:hover {
+  cursor: pointer;
+  background-color: rgb(85, 138, 207);
+}
+
+.game__list {
+  background-color: rgb(72, 142, 235);
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  border-radius: 0 0 5px 5px;
+  height: 0;
+  overflow: hidden;
+}
+.game__list.open {
+  padding: 10px;
+  height: min-content;
+}
+.game__list.close {
+  padding: 0;
+  height: 0;
+}
+
+.game__list > * {
+  border-bottom: 1px solid rgb(33, 84, 151);
+}
+.game__list :last-child {
+  border-bottom: none;
+}
+
+.level {
+  font-size: 24px;
+  padding: 5px;
+  display: flex;
+  gap: 15px;
 }

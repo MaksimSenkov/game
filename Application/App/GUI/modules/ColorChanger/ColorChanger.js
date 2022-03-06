@@ -17,10 +17,8 @@ export default class ColorChanger extends GUIElement {
       const event = new CustomEvent("colorChange", {
         detail: {
           color: this.node.value,
-          log: "hi",
         },
       });
-      console.log(this.node.value);
       root.dispatchEvent(event);
     };
     this.node.addEventListener("change", this.listener);

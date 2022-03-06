@@ -121,7 +121,7 @@ export default class Application {
       }
 
       await Game.moveCameraFromTo(Game.camera.position, { x: 0, y: 20, z: 0 });
-
+      Log.getDataFromLocalStorage();
       Log.addLog();
       this.GUI.initResultMenu(this.root, new GraphicalUserInterface.Result());
 

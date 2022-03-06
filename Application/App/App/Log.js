@@ -1,12 +1,13 @@
 export default class Log {
-  static #data = JSON.parse(localStorage.getItem("gameData") || JSON.stringify({}));
+  // static #data = JSON.parse(localStorage.getItem("gameData") || JSON.stringify({}));
+  static #data = undefined;
 
   static #playerName = undefined;
   static #date = undefined;
   static #currentLog = undefined;
 
-  static check() {
-    console.log(this.#data);
+  static getDataFromLocalStorage() {
+    this.#data = JSON.parse(localStorage.getItem("gameData") || JSON.stringify({}));
   }
   static startLogging() {
     this.#playerName = localStorage.getItem("GamePlayerName");
